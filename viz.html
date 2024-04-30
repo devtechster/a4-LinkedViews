@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website WebViews</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .webview-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .webview {
+            width: 30%;
+            height: 400px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebViews of Different Websites</h1>
+    <div class="webview-container">
+        <div class="webview">
+            <iframe src="https://www.google.com"></iframe>
+        </div>
+        <div class="webview">
+            <iframe src="https://github.com/cs573-24s/grad-final"></iframe>
+        </div   >
+        <div class="webview">
+            <iframe src="https://chat.openai.com/"></iframe>
+        </div>
+    </div>
+</body>
+</html>

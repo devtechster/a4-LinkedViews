@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataVis LinkedViews</title>
+</head>
+
+<body>
+    <h1>DataVis LinkedViews</h1>
+    <button onclick="showViz('viz1')">viz1</button>
+    <button onclick="showViz('viz2')">viz2</button>
+    <iframe id="vizFrame" src="" width="100%" height="500px" style="display: none; border: none;"></iframe>
+
+    <script>
+        function showViz(vizName) {
+            const vizFrame = document.getElementById('vizFrame');
+            vizFrame.src = `${vizName}/index.html`;
+            vizFrame.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>

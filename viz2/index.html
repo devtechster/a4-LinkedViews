@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Processor Comparison</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .chart {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .legend {
+            font-size: 12px;
+        }
+
+        .legend rect {
+            width: 10px;
+            height: 10px;
+            fill-opacity: 0.7;
+        }
+
+        .legend text {
+            font-size: 10px;
+            fill: #000;
+            padding: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chart1" class="chart"></div>
+    <div id="chart2" class="chart"></div>
+    <div id="chart3" class="chart"></div>
+    <div id="chart4" class="chart"></div>
+
+    <script>
+        d3.csv("data.csv").then(function(data) {
+            // Create bar chart 1 comparing speed and threadprocessing
+            createBarChart("#chart1", "Speed and ThredProcessing Comparison", ["speed", "threadprocessing"], data);
+
+            // Create bar chart 2 comparing bufferfactor1 and bufferfactor2
+            createBarChart("#chart2", "Bufferfactors Comparison", ["bufferfactor1", "bufferfactor2"], data);
+            
+            // Create bar chart 2 comparing bufferfactor1 and bufferfactor2
+            createBarChart("#chart3", "Speed vs Buffer Factor 1", ["speed", "bufferfactor1"], data);
+
+            // Create bar chart 3 comparing bufferfactor1 and bufferfactor2
+            createBarChart("#chart4", "Speed vs Buffer Factor 2", ["speed", "bufferfactor2"], data);
+
+        });
+
+        // Function to create a bar chart
+        function createBarChart(selector, title, factors, data) {
+            var margin = { top: 50, right: 30, bottom: 80, left: 60 },
+                width = 400 - margin.left - margin.right,
+                height = 300 - margin.top - margin.bottom;
+
+            var x = d3.scaleBand()
+                .domain(data.map(function(d) { return d.name; })) // Use the "name" column for processor names
+                .range([0, width])
+                .padding(0.1);
+
+            var y = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return d3.max(factors.map(function(factor) { return d[factor]; })) })])
+                .nice()
+                .range([height, 0]);
+
+            var xAxis = d3.axisBottom(x);
+            var yAxis = d3.axisLeft(y);
+
+            var svg = d3.select(selector)
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", -margin.top / 2)
+                .attr("text-anchor", "middle")
+                .text(title);
+
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-65)");
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -50)
+                .attr("dy", "0.71em")
+                .attr("fill", "#000")
+                .text("Values");
+
+            factors.forEach(function(factor, i) {
+                svg.selectAll(".bar-" + i)
+                    .data(data)
+                    .enter().append("rect")
+                    .attr("class", "bar-" + i)
+                    .attr("x", function(d) { return x(d.name) + x.bandwidth() / factors.length * i; })
+                    .attr("width", x.bandwidth() / factors.length)
+                    .attr("y", function(d) { return y(d[factor]); })
+                    .attr("height", function(d) { return height - y(d[factor]); })
+                    .attr("fill", d3.schemeCategory10[i]);
+            });
+
+            // Legend
+            var legend = svg.selectAll(".legend")
+                .data(factors)
+                .enter().append("g")
+                .attr("class", "legend")
+                .attr("transform", function(d, i) { return "translate(0," + (height + 20 + i * 20) + ")"; });
+
+            legend.append("rect")
+                .attr("x", width - 18)
+                .attr("width", 18)
+                .attr("height", 18)
+                .style("fill", function(d, i) { return d3.schemeCategory10[i]; });
+
+            legend.append("text")
+                .attr("x", width - 24)
+                .attr("y", 9)
+                .attr("dy", ".35em")
+                .style("text-anchor", "end")
+                .text(function(d) { return d; });
+        }
+    </script>
+</body>
+</html>
